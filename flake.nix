@@ -46,7 +46,7 @@
             root = ./.;
           };
 
-        # project devShell
+        project_dev = import ./shell.nix { };
 
       in rec {
 
@@ -66,6 +66,6 @@
 
         defaultApp = self.apps.${system}.cli_golden;
 
-        devShell = pkgs.project_dev;
+        devShell = project_dev;
       });
 }
