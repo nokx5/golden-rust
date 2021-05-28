@@ -46,7 +46,7 @@
             root = ./.;
           };
 
-        project_dev = import ./shell.nix { };
+        project_dev = import ./shell.nix { inherit pkgs; };
 
       in rec {
 
