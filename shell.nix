@@ -59,6 +59,7 @@ in mkShell {
     gnumake
     nixfmt
     pkg-config
+    rustfmt
     emacsExt
     vscodeExt
   ] ++ [ typora ];
