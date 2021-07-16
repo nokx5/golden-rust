@@ -1,5 +1,4 @@
-{ pkgs ? import <nixpkgs> { config = { allowUnfree = true; }; }, nightlySupport ? false
-}:
+{ pkgs ? import <nixpkgs> { config = { allowUnfree = true; }; }, nightlySupport ? false }:
 with pkgs;
 let
   vscodeExt = 
