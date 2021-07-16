@@ -1,4 +1,5 @@
-{ pkgs ? import <nixpkgs> { } }:
+{ pkgs ? import <nixpkgs> { config = { allowUnfree = true; }; }, nightlyBuild ? false
+}:
 with pkgs;
 let
   emacsExt = let
@@ -8,6 +9,7 @@ let
     (with epkgs.melpaStablePackages; [
       magit # ; Integrate git <C-x g>
       zerodark-theme # ; Nicolas' theme
+      lsp-mode
     ]) ++ (with epkgs.melpaPackages;
       [
         # undohist
@@ -36,25 +38,25 @@ let
         #   version = "0.7.8";
         #   sha256 = "Y33agSNMVmaVCQdYd5mzwjiK5JTZTtzTkmSGTQrSNg0=";
         # }
-        # {
-        #   name = "vscode-lldb";
-        #   publisher = "vadimcn";
-        #   version = "1.6.3";
-        #   sha256 = "5V7KMwv3/4C8N7wZCTq0RbQKuAshpWlLBHM3fRBc0PA=";
-        # }
         {
           name = "vscode-lldb";
           publisher = "vadimcn";
           version = "1.6.3";
           sha256 = "5V7KMwv3/4C8N7wZCTq0RbQKuAshpWlLBHM3fRBc0PA=";
         }
-
+        {
+          name = "rust-analyzer";
+          publisher = "matklad";
+          version = "0.2.621";
+          sha256 = "YscppuYFfvyU0eGB8KTXrg02+zWswMFdzSSt+kpBGcA=";
+        }
       ];
   };
 in mkShell {
-  nativeBuildInputs = [ rustc cargo ] ++ [
+  nativeBuildInputs = [  rustc  cargo  ] ++ [ rls rustup cargo-watch clippy gcc rust-analyzer rust-bindgen ] ++ [
     bashCompletion
     cacert
+    gdb
     git
     gnumake
     nixfmt
