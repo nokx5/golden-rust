@@ -1,75 +1,102 @@
 {
-  description = "A simple Rust flake";
+  description = "A devShell example";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    utils.url = "github:numtide/flake-utils";
-    naersk = {
-      url = "github:nmattia/naersk/master";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-    mozillapkgs = {
-      url = "github:mozilla/nixpkgs-mozilla";
-      flake = false;
-    };
+    nixpkgs.url      = "github:nixos/nixpkgs/nixos-unstable";
+    rust-overlay.url = "github:oxalica/rust-overlay";
   };
 
-  outputs = { self, nixpkgs, utils, naersk, mozillapkgs }:
-    utils.lib.eachDefaultSystem (system:
-      let
-        # pkgs = nixpkgs.legacyPackages."${system}";
-        pkgs = import nixpkgs {
+  outputs = { self, nixpkgs, rust-overlay, ... }:
+
+  let
+      forCustomSystems = custom: f: nixpkgs.lib.genAttrs custom (system: f system);
+      allSystems = [ "x86_64-linux" "i686-linux" "aarch64-linux" "x86_64-darwin" ];
+      devSystems = [ "x86_64-linux" "x86_64-darwin" ];
+      forAllSystems = forCustomSystems allSystems;
+      forDevSystems = forCustomSystems devSystems;
+
+      nixpkgsFor = forAllSystems (system:
+        import nixpkgs {
           inherit system;
-          config = { allowUnfree = true; };
+          config.allowUnfree = true;
+          overlays = [ rust-overlay self.overlay ];
+        }
+      );
+
+      repoName = "golden-rust";
+      repoVersion = nixpkgsFor.x86_64-linux.golden-rust.version;
+      repoDescription = "golden-rust - A simple Rust flake";
+    in {
+
+      overlay = final: prev: {
+        golden-rust = prev.callPackage ./derivation.nix {
+	rustPlatform = prev.makeRustPlatform { inherit (final) rustc cargo; };
+	src = self;
         };
-
-        # Get a specific rust version
-        mozilla = pkgs.callPackage (mozillapkgs + "/package-set.nix") { };
-        rust = (mozilla.rustChannelOf {
-          date = "2021-05-28"; # get the current date with `date -I`
-          channel = "nightly";
-          sha256 = "sha256:pjq7CPjCVwiXG/0IS6l1FEdoXoaCvIhgYvJTQCAWsu8=";
-        }).rust;
-
-        # Override the version used in naersk
-        naersk-lib = naersk.lib."${system}".override {
-          cargo = rust;
-          rustc = rust;
+        golden-rust-nightly = prev.callPackage ./derivation.nix {
+	rustPlatform = prev.makeRustPlatform { inherit (final.rust-bin.stable.latest) rustc cargo; };
+	src = self;
         };
+      };
 
-        # golden rust
-        project = with naersk.lib."${system}";
-          buildPackage {
-            pname = "golden-rust";
-            root = ./.;
-          };
-        # golden rust nightly
-        project_nightly = with naersk-lib;
-          buildPackage {
-            pname = "golden-rust-nightly";
-            root = ./.;
-          };
+      devShell = forDevSystems (system:
+        let pkgs = nixpkgsFor.${system}; in pkgs.callPackage ./shell.nix { }
+      );
 
-        project_dev = import ./shell.nix { inherit pkgs; };
+    #   hydraJobs = {
 
-      in rec {
+    #     build = forDevSystems (system: nixpkgsFor.${system}.golden-rust);
+    #     build-nightly = forDevSystems (system: nixpkgsFor.${system}.golden-rust);
 
-        packages = {
-          golden_rust = project;
-          golden_rust_nightly = project_nightly;
-        };
-        defaultPackage = self.packages.${system}.golden_rust;
+    #     release = forDevSystems (system:
+    #       with nixpkgsFor.${system}; releaseTools.aggregate
+    #         {
+    #           name = "${repoName}-release-${repoVersion}";
+    #           constituents =
+    #             [
+    #               self.hydraJobs.build.${system}
+    #               self.hydraJobs.build-nightly.${system}
+    #               #self.hydraJobs.docker.${system}
+    #             ] ++ lib.optionals (hostPlatform.isLinux) [
+    #               self.hydraJobs.build.x86_64-linux
+    #               #self.hydraJobs.deb.x86_64-linux
+    #               #self.hydraJobs.rpm.x86_64-linux
+    #               #self.hydraJobs.coverage.x86_64-linux
+    #             ];
+    #           meta.description = "hydraJobs: ${repoDescription}";
+    #         });
+    #   };
 
-        apps = {
-          cli_golden = {
-            type = "app";
-            program =
-              "${self.defaultPackage.${system}}/bin/golden_rust"; # cli_golden
-          };
-        };
+    #   packages = forAllSystems (system:
+    #     {
+    #       inherit (nixpkgsFor.${system}) golden-rust golden-rust-nightly;
+    #     });
 
-        defaultApp = self.apps.${system}.cli_golden;
+    #   defaultPackage = forAllSystems (system:
+    #     self.packages.${system}.golden-rust);
 
-        devShell = project_dev;
-      });
+    #   apps = forAllSystems (system: {
+    #     golden-rust = {
+    #       type = "app";
+    #       program = "${self.packages.${system}.golden-rust}/bin/cli_golden";
+    #     };
+    #     golden-rust-nightly = {
+    #       type = "app";
+    #       program = "${self.packages.${system}.golden-rust-nightly}/bin/cli_golden";
+    #     };
+    #   }
+    #   );
+
+    #   defaultApp = forAllSystems (system: self.apps.${system}.golden-rust);
+
+    #   templates = {
+    #     golden-rust = {
+    #       description = "template - ${repoDescription}";
+    #       path = ./.;
+    #     };
+    #   };
+
+    #   defaultTemplate = self.templates.golden-rust;
+    };
+
 }
