@@ -1,33 +1,34 @@
-{ pkgs ? import <nixpkgs> { config = { allowUnfree = true; }; }, nightlySupport ? false }:
+{ pkgs ? import <nixpkgs> { config = { allowUnfree = true; }; } }:
 with pkgs;
 let
-  vscodeExt = 
- vscode-with-extensions.override {
-    vscodeExtensions = with vscode-extensions;
-      [ bbenoist.Nix eamodio.gitlens matklad.rust-analyzer vadimcn.vscode-lldb ]
-      ++ vscode-utils.extensionsFromVscodeMarketplace [
-        {
-          name = "emacs-mcx";
-          publisher = "tuttieee";
-          version = "0.31.0";
-          sha256 = "McSWrOSYM3sMtZt48iStiUvfAXURGk16CHKfBHKj5Zk=";
-        }
-      ];
-  };
-in mkShell {
-   inherit nightlySupport;
+  vscodeExt =
+    vscode-with-extensions.override {
+      vscodeExtensions = with vscode-extensions;
+        [ bbenoist.Nix eamodio.gitlens matklad.rust-analyzer vadimcn.vscode-lldb ]
+        ++ vscode-utils.extensionsFromVscodeMarketplace [
+          {
+            name = "emacs-mcx";
+            publisher = "tuttieee";
+            version = "0.31.0";
+            sha256 = "McSWrOSYM3sMtZt48iStiUvfAXURGk16CHKfBHKj5Zk=";
+          }
+        ];
+    };
+in
+mkShell {
   nativeBuildInputs =
-  [rustup] ++ [ openssl pkgconfig ] ++ [exa fd] ++ [
-    bashCompletion
-    cacert
-    gcc
-    gdb
-    git
-    gnumake
-    nixfmt
-    # pkg-config
-    # rustfmt
-    emacs-nox] ++  lib.optionals (hostPlatform.isLinux) [typora vscodeExt];
+    [ rustup ] ++ [ openssl pkgconfig ] ++ [ exa fd ] ++ [
+      bashCompletion
+      cacert
+      gcc
+      gdb
+      git
+      gnumake
+      nixpkgs-fmt
+      # pkg-config
+      # rustfmt
+      emacs-nox
+    ] ++ lib.optionals (hostPlatform.isLinux) [ typora vscodeExt ];
 
   shellHook = ''
     export SSL_CERT_FILE=${cacert}/etc/ssl/certs/ca-bundle.crt
@@ -39,6 +40,6 @@ in mkShell {
     echo "rustup toolchain install stable"
     echo ""
     echo "clean the environment before"
-    '';
+  '';
 
 }

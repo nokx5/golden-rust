@@ -3,7 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-    rust-overlay.url = "github:oxalica/rust-overlay";    
+    rust-overlay.url = "github:oxalica/rust-overlay";
   };
 
   outputs = { self, nixpkgs, rust-overlay }:
@@ -31,12 +31,12 @@
 
       overlay = final: prev: {
         golden-rust = prev.callPackage ./derivation.nix {
-      	rustPlatform = prev.makeRustPlatform { inherit (final) rustc cargo; };
-      	src = self;
+          rustPlatform = prev.makeRustPlatform { inherit (final) rustc cargo; };
+          src = self;
         };
         golden-rust-nightly = prev.callPackage ./derivation.nix {
-      	rustPlatform = prev.makeRustPlatform { inherit (final.rust-bin.stable.latest) rustc cargo; };
-      	src = self;
+          rustPlatform = prev.makeRustPlatform { inherit (final.rust-bin.stable.latest) rustc cargo; };
+          src = self;
         };
       };
 
