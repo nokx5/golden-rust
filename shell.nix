@@ -16,8 +16,7 @@ let
     };
 in
 mkShell {
-  nativeBuildInputs =
-    [ rustup ] ++ [ openssl pkgconfig ] ++ [ exa fd ] ++ [
+  nativeBuildInputs = [ rustup ] ++ [ openssl pkgconfig ] ++ [ exa fd ] ++ [ less more] ++ [
       bashCompletion
       cacert
       gcc
@@ -32,14 +31,14 @@ mkShell {
 
   shellHook = ''
     export SSL_CERT_FILE=${cacert}/etc/ssl/certs/ca-bundle.crt
+    export RUSTUP_HOME=$PWD/.rustup
     alias ls=exa
     alias find=fd
-    echo "You may need to install a rust compiler using rustup :"
-    echo "rustup toolchain install nightly"
-    echo "# or"
-    echo "rustup toolchain install stable"
     echo ""
-    echo "clean the environment before"
+    echo "# You may need to install a rust compiler using rustup :"
+    echo "rustup override set stable # nightly"
+    echo "# # clean the environment :"
+    echo "# rm -rf $PWD/.rustup"
   '';
 
 }
