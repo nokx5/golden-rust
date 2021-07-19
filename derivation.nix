@@ -1,30 +1,23 @@
-{ pkgs }:
+{ rustPlatform, src, pkg-config }:
 
-#{ rustPlatform, src ? ./. }:
-
-
-with pkgs; rustPlatform.buildRustPackage {
+rustPlatform.buildRustPackage {
   pname = "golden-rust";
-  version = (builtins.fromTOML (builtins.readFile ./Cargo.toml)).package.version;
-
-  src = builtins.path {
-    name = "golden-rust";
-    path = ./.;
-  };
+  version = (builtins.fromTOML (builtins.readFile "${src}/Cargo.toml")).package.version;
+  inherit src;
 
   cargoLock = {
-    lockFile = ./Cargo.lock;
+    lockFile = "${src}/Cargo.lock";
   };
 
   nativeBuildInputs = [
-    cmake
+    # cmake
     pkg-config
   ];
 
   buildInputs = [
-    # golden-rust
+    # sqlite
   ];
 
-  cargoTestFlags = [];
+  cargoTestFlags = [ ];
 
 }

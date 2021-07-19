@@ -16,18 +16,18 @@ let
     };
 in
 mkShell {
-  nativeBuildInputs = [ rustup ] ++ [ openssl pkgconfig ] ++ [ exa fd ] ++ [ less more] ++ [
-      bashCompletion
-      cacert
-      gcc
-      gdb
-      git
-      gnumake
-      nixpkgs-fmt
-      # pkg-config
-      # rustfmt
-      emacs-nox
-    ] ++ lib.optionals (hostPlatform.isLinux) [ typora vscodeExt ];
+  nativeBuildInputs = [ rustup ] ++ [ openssl pkgconfig ] ++ [ exa fd ] ++ [ less more ] ++ [
+    bashCompletion
+    cacert
+    gcc
+    gdb
+    git
+    gnumake
+    nixpkgs-fmt
+    # pkg-config
+    # rustfmt
+    emacs-nox
+  ] ++ lib.optionals (hostPlatform.isLinux) [ typora vscodeExt ];
 
   shellHook = ''
     export SSL_CERT_FILE=${cacert}/etc/ssl/certs/ca-bundle.crt

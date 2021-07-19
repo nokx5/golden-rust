@@ -30,15 +30,14 @@
     {
 
       overlay = final: prev: {
-        golden-rust = prev.callPackage ./derivation.nix {
-	  inherit (final) pkgs;
-          # rustPlatform = prev.makeRustPlatform { inherit (final) rustc cargo; }; # final.rustPlatform;
-          # src = self;
-        };
-        golden-rust-nightly = prev.callPackage ./derivation.nix {
-          rustPlatform = prev.makeRustPlatform { inherit (final.rust-bin.stable.latest) rustc cargo; };
+        golden-rust = with final; prev.callPackage ./derivation.nix {
           src = self;
         };
+        golden-rust-nightly = final.golden-rust; # not working yet
+        # golden-rust-nightly = prev.callPackage ./derivation.nix {
+        #   rustPlatform = prev.makeRustPlatform { inherit (final.rust-bin.stable.latest) rustc cargo; };
+        #   src = self;
+        # };
       };
 
       devShell = forDevSystems (system:
@@ -122,8 +121,8 @@
           inherit (nixpkgsFor.${system}) golden-rust golden-rust-nightly;
         });
 
-      # defaultPackage = forAllSystems (system:
-      #   self.packages.${system}.golden-rust);
+      defaultPackage = forAllSystems (system:
+        self.packages.${system}.golden-rust);
 
       # apps = forAllSystems (system: {
       #   golden-rust = {
