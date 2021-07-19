@@ -123,19 +123,19 @@
       defaultPackage = forAllSystems (system:
         self.packages.${system}.golden-rust);
 
-      # apps = forAllSystems (system: {
-      #   golden-rust = {
-      #     type = "app";
-      #     program = "${self.packages.${system}.golden-rust}/bin/cli_golden";
-      #   };
-      #   golden-rust-nightly = {
-      #     type = "app";
-      #     program = "${self.packages.${system}.golden-rust-nightly}/bin/cli_golden";
-      #   };
-      # }
-      # );
+      apps = forAllSystems (system: {
+        golden-rust = {
+          type = "app";
+          program = "${self.packages.${system}.golden-rust}/bin/cli_golden";
+        };
+        golden-rust-nightly = {
+          type = "app";
+          program = "${self.packages.${system}.golden-rust-nightly}/bin/cli_golden";
+        };
+      }
+      );
 
-      # defaultApp = forAllSystems (system: self.apps.${system}.golden-rust);
+      defaultApp = forAllSystems (system: self.apps.${system}.golden-rust);
 
       templates = {
         golden-rust = {
