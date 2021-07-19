@@ -1,10 +1,20 @@
 [package]
-name = "golden_rust"
+name = "golden-rust"
 version = "0.0.0"
 authors = ["nokx <info@nokx.ch>"]
 edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[[bin]]
+name = "cli_golden"
+path = "src/main.rs"
+
+
+[lib]
+name = "golden"
+path = "src/lib.rs"
+
 
 [dependencies]
 argparse = "0.2.2"
