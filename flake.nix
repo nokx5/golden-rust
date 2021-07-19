@@ -31,8 +31,9 @@
 
       overlay = final: prev: {
         golden-rust = prev.callPackage ./derivation.nix {
-          rustPlatform = prev.makeRustPlatform { inherit (final) rustc cargo; }; # final.rustPlatform;
-          src = self;
+	  inherit (final) pkgs;
+          # rustPlatform = prev.makeRustPlatform { inherit (final) rustc cargo; }; # final.rustPlatform;
+          # src = self;
         };
         golden-rust-nightly = prev.callPackage ./derivation.nix {
           rustPlatform = prev.makeRustPlatform { inherit (final.rust-bin.stable.latest) rustc cargo; };

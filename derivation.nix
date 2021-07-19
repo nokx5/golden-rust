@@ -1,6 +1,6 @@
 { pkgs }:
 
-#{ rustPlatform, src }:
+#{ rustPlatform, src ? ./. }:
 
 
 with pkgs; rustPlatform.buildRustPackage {
