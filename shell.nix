@@ -4,7 +4,7 @@ let
   vscodeExt =
     vscode-with-extensions.override {
       vscodeExtensions = with vscode-extensions;
-        [ bbenoist.Nix eamodio.gitlens matklad.rust-analyzer vadimcn.vscode-lldb ]
+        [ bbenoist.nix eamodio.gitlens matklad.rust-analyzer vadimcn.vscode-lldb ]
         ++ vscode-utils.extensionsFromVscodeMarketplace [
           {
             name = "emacs-mcx";
@@ -40,5 +40,4 @@ mkShell {
     echo "# # clean the environment :"
     echo "# rm -rf $PWD/.rustup"
   '';
-
 }
