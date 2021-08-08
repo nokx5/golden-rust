@@ -48,7 +48,7 @@ nix-build --expr 'with import <nixpkgs> {}; callPackage ./derivation.nix {src = 
 
 Note that you can write the nix expression directly to the `default.nix` file to avoid typing `--expr` each time.
 
- #### Option 2: Develop the software (supercharged :artificial_satellite:)
+#### Option 2: Develop the software (supercharged :artificial_satellite:)
 
 You can enter the supercharged environment for development.
 
