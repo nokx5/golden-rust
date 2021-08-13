@@ -8,6 +8,8 @@
 
 This is a skeleton template for a Rust project. Please find all the documentation here and the source code [here](https://github.com/nokx5/golden-rust).
 
+> **NOTE:** you may require the experimental flakes commands `nix build` and `nix shell` in the following. If you do not, only classic nix commands `nix-build` and `nix-shell` will be available.
+
 ## My development tools are
 - nix :snowflake: (packaging from hell :heart:)
   - *with [rust-overlay](https://github.com/oxalica/rust-overlay) for targeted binary distributed rust toolchains*
@@ -20,17 +22,19 @@ This is a skeleton template for a Rust project. Please find all the documentatio
 - [useful crates](https://lib.rs/development-tools/testing) (tests)
 - rustdoc (documentation)
 
-## Use the classic Nix commands
-
-### Use the software (without git clone)
+## Use the software
 
 The [nokxpkgs](https://github.com/nokx5/nokxpkgs#add-nokxpkgs-to-your-nix-channel) channel and associate overlay can be imported with the `-I` command or by setting the `NIX_PATH` environment variable.
 
 ```bash
 nix-shell -I nixpkgs=https://github.com/nokx5/nokxpkgs/archive/main.tar.gz -p golden-rust --command cli_golden
+# or
+nix shell github:nokx5/golden-rust --command cli_golden
+nix shell github:nokx5/nokxpkgs#golden-rust --command cli_golden
 ```
+## Develop the software (depreciated - new hash)
 
-### Develop the software
+> Please note that all commands of this section creates new hashes which means that the evaluation may require additional downloads.
 
 Start by cloning the [git repository](https://github.com/nokx5/golden-rust) locally and enter it.
 
@@ -39,11 +43,11 @@ Start by cloning the [git repository](https://github.com/nokx5/golden-rust) loca
 You can develop or build the local software easily with the minimal requirements.
 
 ```bash
-# option a: develop with a local shell
+# option a: develop with a local shell (depreciated - new hash)
 nix-shell --expr 'with import <nixpkgs> {}; callPackage ./derivation.nix {src = ./.; }'
 
-# option b: build the local project
-nix-build --expr 'with import <nixpkgs> {}; callPackage ./derivation.nix {src = ./.; }'
+# option b: build the local project (depreciated - new hash)
+nix-build --expr 'with import <nixpkgs> {}; callPackage ./derivation.nix {src = ./.; }' --no-out-link
 ```
 
 Note that you can write the nix expression directly to the `default.nix` file to avoid typing `--expr` each time.
@@ -53,33 +57,25 @@ Note that you can write the nix expression directly to the `default.nix` file to
 You can enter the supercharged environment for development.
 
 ```bash
-nix-shell shell.nix
+nix-shell shell.nix # (depreciated - new hash)
 ```
 
-## Use the experimental flake feature
+## Develop the software
 
-**NOTE:** This section requires the experimental `flake` and `nix-command` features. Please refer to the official documentation for nix flakes. The advantage of using nix flakes is that you avoid channel pinning issues.
-
-After Nix was installed, update to the unstable feature with:
-
-```bash
-nix-env -f '<nixpkgs>' -iA nixUnstable
-```
-
-And enable experimental features with:
-
-```bash
-mkdir -p ~/.config/nix
-echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
-```
-
-### Use the software (without git clone)
-
-```
-nix shell github:nokx5/golden-rust --command cli_golden
-```
-
-### Develop the software
+> **NOTE:** This section requires the experimental `flake` and `nix-command` features. Please refer to the official documentation for nix flakes. The advantage of using nix flakes is that you avoid channel pinning issues.
+> 
+> After Nix was installed, update to the unstable feature with:
+> 
+> ```bash
+> nix-env -f '<nixpkgs>' -iA nixUnstable
+> ```
+> 
+> And enable experimental features with:
+> 
+> ```bash
+> mkdir -p ~/.config/nix
+> echo 'experimental-features = nix-command flakes' >> ~/.config/nix/nix.conf
+> ```
 
 Start by cloning the [git repository](https://github.com/nokx5/golden-rust) locally and enter it.
 
