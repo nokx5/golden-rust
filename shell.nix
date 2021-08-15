@@ -18,6 +18,7 @@ in
 mkShell {
   nativeBuildInputs = [ rustup ] ++ [ openssl pkgconfig ] ++ [ exa fd ] ++ [ less more ] ++ [
     bashCompletion
+    bashInteractive
     cacert
     gcc
     gdb
