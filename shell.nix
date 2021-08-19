@@ -16,7 +16,7 @@ let
     };
 in
 mkShell {
-  nativeBuildInputs = [ rustup ] ++ [ openssl pkgconfig ] ++ [ exa fd ] ++ [ less more ] ++ [
+  nativeBuildInputs = [ rustup ] ++ [ openssl pkgconfig ] ++ [ exa fd ripgrep ] ++ [ less more ] ++ [
     bashCompletion
     bashInteractive
     cacert

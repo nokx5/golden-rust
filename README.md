@@ -105,6 +105,16 @@ nix-shell . -A devShell.x86_64-linux
 
 ## Code Snippets
 
+Build all flake links
+```bash
+nix-build . -A packages.x86_64-linux.golden-rust --out-link result-golden-rust
+nix-build . -A packages.x86_64-linux.golden-rust.inputDerivation --out-link result-golden-rust-dev
+nix-build . -A devShell.x86_64-linux.inputDerivation --out-link result-golden-rust-dev-full
+
+nix-build . -A packages.x86_64-linux.golden-rust-nightly --out-link result-golden-rust-nightly
+nix-build . -A packages.x86_64-linux.golden-rust-nightly.inputDerivation --out-link result-golden-rust-nightly-dev
+```
+
 One line code formatter for C/C++ projects
 
 ```bash

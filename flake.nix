@@ -1,13 +1,13 @@
 {
   description = "golden-rust - A simple Rust flake";
 
-  nixConfig.bash-prompt = "\\033[0;33m\\033[1m\[dev-golden-rust\]\\033[0m\\033[0m$ ";
+  nixConfig.bash-prompt = "\\033[0;33m\\033[1m\[dev-golden-rust\] \\w\\033[0m\\033[0m$ ";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     rust-overlay = {
       url = "github:oxalica/rust-overlay";
-      inputs.nixpkgs.follows = "nixpkgs";
+      # inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
