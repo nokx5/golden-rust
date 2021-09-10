@@ -25,12 +25,16 @@ mkShell {
     git
     gnumake
     nixpkgs-fmt
-    # pkg-config
     # rustfmt
     emacs-nox
   ] ++ lib.optionals (hostPlatform.isLinux) [ typora vscodeExt ];
 
+  buildInputs = [ ] ++ lib.optionals (hostPlatform.isLinux) [ glibcLocales ];
+
+  LANG = "en_US.UTF-8";
+
   shellHook = ''
+    export HOME=$(pwd)
     export SSL_CERT_FILE=${cacert}/etc/ssl/certs/ca-bundle.crt
     export RUSTUP_HOME=$PWD/.rustup
     alias ls=exa
